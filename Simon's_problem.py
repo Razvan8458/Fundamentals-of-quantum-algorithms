@@ -8,7 +8,8 @@ from math import pi
 import random
 from qiskit_aer import AerSimulator
 import numpy as np
-from qiskit_ibm_runtime.fake_provider import FakeManilaV2
+from qiskit_ibm_runtime.fake_provider import FakeBrisbane
+from sympy import Matrix
 #%%
 def permute_query(n, m, qc):
     for i in range(n, n+m):
@@ -88,15 +89,49 @@ def compile_circuit(n, m, function: QuantumCircuit):
 def simon_problem(n, m, function: QuantumCircuit):
 
     qc = compile_circuit(n, m, function)
-    fake_backend = FakeManilaV2()
+    fake_backend = FakeBrisbane()
     hardware_simulator = AerSimulator.from_backend(fake_backend)
     transpiled_qc = transpile(qc, backend = hardware_simulator)
-    result = hardware_simulator.run(transpiled_qc, shots = n + 15).result()
+    result = hardware_simulator.run(transpiled_qc, shots = n + 1024).result()
     statistics = result.get_counts()
-    display(plot_histogram(statistics))
-# %%
-f = simon_query(2, "11")
-display(f.draw(output = "mpl"))
-display(simon_problem(2, 2, f))
+    
+    final_statistics = {}
+    for key, value in statistics.items():
+        measured = key[:n]
+        final_statistics[measured] = value
+    display(plot_histogram(final_statistics))
+    #we take the n qubits with the highest counts, which for small n, with an addition
+    #of 2024 shots will probably the correct string, even accounting for noise
+    
+    final_statistics = dict(sorted(final_statistics.items(), key = lambda item:item[1], reverse = True))
+    first_n = dict(list(final_statistics.items())[:n])
+    print(first_n)
+
+    matrix = np.array([list(bitstring) for bitstring, count in first_n.items()]).astype(int)
+    for i in range(len(matrix)):
+        print(matrix[i])
+    
+    #Transpose the matrix and append the identity matrix
+    matrix = Matrix(matrix).T
+    augmented_matrix = Matrix(np.hstack([matrix, np.eye(matrix.shape[0], dtype = int)]))
+
+    #Perform Gauss-Jordan elimination
+    reduced_row = augmented_matrix.rref(iszerofunc=lambda x: x % 2 == 0)
+
+    #Convert matrix
+    final_result = np.array(reduced_row[0])
+    final_result = np.mod(final_result, 2)
+
+    if all(value == 0 for value in final_result[-1, :matrix.shape[1]]):
+        result = "".join(str(c) for c in final_result[-1, matrix.shape[1]:])
+    else:
+        result = "0" * matrix.shape[0]
+    print("Result is: ", result)
 
 # %%
+f = simon_query(5, "10101")
+display(f.draw(output = "mpl"))
+display(simon_problem(5, 5, f))
+
+# %%
+
