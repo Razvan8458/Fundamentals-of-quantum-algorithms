@@ -38,7 +38,7 @@ The code is ran on a simulation of a real quantum arhitecture from ibm, Brisbane
 
 #Phase factoring
 
-Implementation of a code that solves Phase factoring using n qbits for precision of 1/(2^n - 1)
+Implementation of a code that solves Phase factoring using n qbits for precision of 1/(2^n)
 It only uses 1 qubit for keeping the qubit that gets transformed by the function, because i only used it P gates, with a random angle.
 
 In the photos we have the output for the code having 6 qbits for precision and P having the angle 2pi/9
