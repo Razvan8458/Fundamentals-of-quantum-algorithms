@@ -14,7 +14,7 @@ from qiskit.circuit.library import QFT
 # %%
 def angle_query():
     
-    factor = random.randint(1, 100)
+    factor = random.randint(1, 20)
     angle = 2*pi / factor
     return angle
 
@@ -55,9 +55,9 @@ def phase_factoring(num_qubits):
     display(plot_histogram(statistics))
     max_key = max(statistics, key = lambda k: statistics[k])
     print("The answer we found: ")
-    value_found = float(int(max_key, 2)) / (2^(num_qubits - 1) - 1)
+    value_found = float(int(max_key, 2)) / (2**num_qubits)
     print(value_found)
 
 # %%
-phase_factoring(5)
+phase_factoring(6)
 # %%
