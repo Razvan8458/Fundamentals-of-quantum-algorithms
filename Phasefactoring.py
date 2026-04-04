@@ -44,6 +44,7 @@ def phase_factoring(num_qubits):
     print("The phase is: ")
     display(angle / (2 * pi))
     qc = compile_circuit(angle, num_qubits)
+    print("The circuit is: ")
     display(qc.draw(output = "mpl"))
 
     fake_backend = FakeBrisbane()
@@ -52,8 +53,11 @@ def phase_factoring(num_qubits):
     result = hardware_simulator.run(transpiled_qc, shots = 128).result()
     statistics = result.get_counts()
     display(plot_histogram(statistics))
-
+    max_key = max(statistics, key = lambda k: statistics[k])
+    print("The answer we found: ")
+    value_found = float(int(max_key, 2)) / (2^(num_qubits - 1) - 1)
+    print(value_found)
 
 # %%
-phase_factoring(10)
+phase_factoring(5)
 # %%
