@@ -36,6 +36,27 @@ The code is ran on a simulation of a real quantum arhitecture from ibm, Brisbane
 
 <img width="932" height="664" alt="image" src="https://github.com/user-attachments/assets/bc41eabb-c18a-429c-a20c-96f915b1c84f" />
 
+#Phase factoring
+
+Implementation of a code that solves Phase factoring using n qbits for precision of 1/(2^n - 1)
+It only uses 1 qubit for keeping the qubit that gets transformed by the function, because i only used it P gates, with a random angle.
+
+In the photos we have the output for the code having 6 qbits for precision and P having the angle 2pi/9
+
+<img width="1054" height="878" alt="image" src="https://github.com/user-attachments/assets/0db8f68d-dc6d-4570-bf56-aeb41281c77c" />
+
+<img width="1007" height="709" alt="image" src="https://github.com/user-attachments/assets/a4b73714-98cb-47dc-a6dc-6f01c90ad8da" />
+
+<img width="1006" height="667" alt="image" src="https://github.com/user-attachments/assets/8dc3c7b8-a0b2-4bad-be1b-24e3198c89d1" />
+
+<img width="1047" height="853" alt="image" src="https://github.com/user-attachments/assets/18def8c7-cc44-4a6e-872c-3415f70571c2" />
+
+<img width="288" height="79" alt="image" src="https://github.com/user-attachments/assets/7d41dac9-b04c-4ec1-95cd-07d4cc6b0dcc" />
+
+
+
+
+
 
 
 
