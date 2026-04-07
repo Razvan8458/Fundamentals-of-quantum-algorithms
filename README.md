@@ -53,6 +53,15 @@ In the photos we have the output for the code having 6 qbits for precision and P
 
 <img width="288" height="79" alt="image" src="https://github.com/user-attachments/assets/7d41dac9-b04c-4ec1-95cd-07d4cc6b0dcc" />
 
+#Quantum Fourier Transform
+
+Implementation of a code that computes the circuit for QFT(2^n) in O(n^2) complexity, using recursivity
+Here we have the circuit for QFT2, QFT4, QFT8, QFT16 and QFT32
+
+<img width="1024" height="573" alt="image" src="https://github.com/user-attachments/assets/99cc972e-c349-48e9-9242-b9d4b3e84402" />
+
+<img width="1055" height="901" alt="image" src="https://github.com/user-attachments/assets/57ebd33f-6bec-4a72-87ed-129425f87067" />
+
 
 
 
