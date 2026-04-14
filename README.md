@@ -62,6 +62,45 @@ Here we have the circuit for QFT2, QFT4, QFT8, QFT16 and QFT32
 
 <img width="1055" height="901" alt="image" src="https://github.com/user-attachments/assets/57ebd33f-6bec-4a72-87ed-129425f87067" />
 
+#Quantum adder
+
+This is the implementation of a quantum adder, for positive numbers. It uses one ancilla qubit, and a total of 2 * n + 2 qubits, n being
+the number of qubits the numbers are represented on. It uses 4 * n + 1 cx gate and 2 * n ccx gates. It also measures the qubits if you give it
+the argument measure_qubits = True. In the program it also has a little code transforming the measurement into the number that is gained from
+adding the two numbers.
+
+-Calculation of the carry's:
+  We calculate the carry-out for all the qubits
+  This we get from two cx gates and one ccx gate
+  We first apply the two cx gates, with the control qubit being the carry-in to the pair of qubits, one from
+  each of the numbers we are adding.
+  We then apply a ccx gate, with the controls being the two qubits to the carry-in, which makes it the carry-out
+  We name a = value of the qubit from the first number at the beginning , b = value of qubit from the second number at the beginning
+  and c = carry-in
+  So the result in the carry-in, now carry-out is ab xor ac xor bc, which is 1 if at least two of the qubits are 1
+
+  Analysis:
+  q0 - qubit in which is stored the value of the qubit from the first number
+  q1 - \..\ from the second number
+  q2 - qubit where we store the carry-in value
+
+  at the beginning the values are, q0 = a, q1 = b, q2 = c
+  after the first two cx gates we have:
+  q0 = a xor c
+  q1 = b xor c
+  after the ccx gate:
+  q2 = c xor ((a xor c) * (b xor c))
+  q2 = c xor (ab xor ac xor bc xor c)
+  The xor operation is commutative ->
+  q2 = ab xor ac xor bc
+  If one of the values is 1, all the terms will be 0, so the result is 0 (0 xor 0 xor 0 = )
+  If two of the values are 1, one of the terms will be 1, so the result is 1 ( 1 xor 0 xor 0 = 1)
+  If three of the values are 1, all the terms will be 1, so the results is 1 ( 1 xor 1 xor 1 = 1)
+
+<img width="1040" height="896" alt="image" src="https://github.com/user-attachments/assets/e22ebcb5-944d-45bb-9314-1fac3ea57740" />
+
+<img width="1035" height="520" alt="image" src="https://github.com/user-attachments/assets/f190e88c-ac2f-42a5-ba13-7b037861b3c2" />
+
 
 
 
