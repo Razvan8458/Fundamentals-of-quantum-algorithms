@@ -93,7 +93,7 @@ adding the two numbers.
   q2 = c xor (ab xor ac xor bc xor c)
   The xor operation is commutative ->
   q2 = ab xor ac xor bc
-  If one of the values is 1, all the terms will be 0, so the result is 0 (0 xor 0 xor 0 = )
+  If one of the values is 1, all the terms will be 0, so the result is 0 (0 xor 0 xor 0 = 0)
   If two of the values are 1, one of the terms will be 1, so the result is 1 ( 1 xor 0 xor 0 = 1)
   If three of the values are 1, all the terms will be 1, so the results is 1 ( 1 xor 1 xor 1 = 1)
 
