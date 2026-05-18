@@ -2,25 +2,21 @@
 from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
 from qiskit_aer import AerSimulator
 # %%
-def build_adder(n, a, b):
+def build_adder(n, qc1, qc2, measure_qubits = False):
 
-    qc = QuantumCircuit(2 * n + 2, n + 1)
+    if measure_qubits == False:
+        qc = QuantumCircuit(2 * n + 2, 0)
+    else:
+        qc = QuantumCircuit(2 * n + 2, n + 1)
+
+    qc = qc.compose(qc1)
+    qc = qc.compose(qc2, qubits = range(n , 2 * n))
 
     #The first n qubits represent the first number, the next n qubits the second number
     #After that, the last two qubits are:
     #One representing a carry bit, to hold the qubit, that can overflow from the addition of the numbers
     #and the last one being an ancilla qubit, meant to hold the temporary carry between qubits
 
-    binary_string = f'{a:0{n}b}'
-    for index, bit in enumerate(reversed(binary_string)):
-        if bit == "1":
-            qc.x(index)
-    binary_string = f'{b:0{n}b}'
-    for index, bit in enumerate(reversed(binary_string)):
-        if bit == "1":
-            qc.x(n + index)
-
-    
     #We first calculate the carry's
     for i in range(n):
         #For each step we have a carry-in qubit, and two qubits we wish to add
@@ -38,14 +34,14 @@ def build_adder(n, a, b):
         qc.barrier()
     
     qc.barrier()
-    #We now entagle the state of the ancilliary qubit with the last carry-out qubit
+    #We now entagle the state of the ancilla qubit with the last carry-out qubit
     #in the case of computation basis states, it copies the qubit
     qc.cx(2 * n + 1, 2 * n)
 
     qc.barrier()
     qc.barrier()
 
-    #We now uncompute the ancilliary qubit, and a part of the operation, and make the finishing calculations
+    #We now uncompute the ancilla qubit, and a part of the operation, and make the finishing calculations
     for i in range(n - 1, -1, -1):
         #Uncomputing the carry qubit
         qc.ccx(i, n + i, 2 * n + 1)
@@ -57,37 +53,47 @@ def build_adder(n, a, b):
         #Which makes the qubit 1 only if the number of qubits equal to 1 are an odd number
         qc.barrier()
 
-
-    qc.measure(range(n, 2 * n + 1), range(n + 1))
+    if measure_qubits == True:
+        qc.measure(range(n, 2 * n + 1), range(n + 1))
     
     # The result of the calculation is in the qubits of the second number
     # plus the carry bit we had 
 
     return qc
 
-
-    
-
-
 # %%
+def transform_number_to_circuit(n, a):
+    qc = QuantumCircuit(n)
 
-display(build_adder(5, 10, 20).draw(output = "mpl"))
+    binary_string = f'{a:0{n}b}'
+    for index, bit in enumerate(reversed(binary_string)):
+        if bit == "1":
+            qc.x(index)
 
+    return qc
 # %%
-num_qubits = 7
+num_qubits = 4
 a = 3
 b = 5
+
 print("The number of qubits is:", num_qubits)
 print("The two numbers are:", a, b)
-qc = build_adder(num_qubits, a, b)
+
+qc_a = transform_number_to_circuit(num_qubits, a)
+qc_b = transform_number_to_circuit(num_qubits, b)
+
+qc = build_adder(num_qubits, qc_a, qc_b, measure_qubits = True)
 display(qc.draw(output = "mpl"))
+
 result = AerSimulator().run(qc, shots = 1, memory = True).result()
 measurement = result.get_memory()
 print(measurement)
+
 number = 0
 for index, bit in enumerate(reversed(measurement[0])):
     if bit == '1':
         number = number + 2**index
+
 print("The result is:", number)
 
 
